@@ -7,8 +7,8 @@ import { Shield, Lock, Unlock, Save, ArrowLeft, Flag } from "lucide-react";
 interface Team {
   id: number;
   name: string;
-  code: string;
-  flagUrl: string;
+  code: string | null;
+  flagUrl: string | null;
 }
 
 interface Match {
@@ -23,6 +23,8 @@ interface Match {
   groupName: string | null;
   homeTeam: Team;
   awayTeam: Team;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface AdminPanelProps {
@@ -150,7 +152,7 @@ export default function AdminPanel({ matches }: AdminPanelProps) {
                   <div className="flex items-center gap-4 flex-1">
                     <div className="flex items-center gap-3 flex-1 justify-end">
                       <span className="text-sm font-bold text-stone-100">{match.homeTeam.name}</span>
-                      <img src={match.homeTeam.flagUrl} alt={match.homeTeam.name} className="w-8 h-6 object-cover rounded" />
+                      <img src={match.homeTeam.flagUrl || ""} alt={match.homeTeam.name} className="w-8 h-6 object-cover rounded" />
                     </div>
 
                     <div className="flex items-center gap-2 px-4">
@@ -174,7 +176,7 @@ export default function AdminPanel({ matches }: AdminPanelProps) {
                     </div>
 
                     <div className="flex items-center gap-3 flex-1">
-                      <img src={match.awayTeam.flagUrl} alt={match.awayTeam.name} className="w-8 h-6 object-cover rounded" />
+                      <img src={match.awayTeam.flagUrl || ""} alt={match.awayTeam.name} className="w-8 h-6 object-cover rounded" />
                       <span className="text-sm font-bold text-stone-100">{match.awayTeam.name}</span>
                     </div>
                   </div>
