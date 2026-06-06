@@ -27,11 +27,21 @@ interface Match {
   updatedAt: Date;
 }
 
-interface AdminPanelProps {
-  matches: Match[];
+interface SupportTicket {
+  id: string;
+  email: string;
+  issueType: string;
+  message: string;
+  locale: string;
+  createdAt: Date;
 }
 
-export default function AdminPanel({ matches }: AdminPanelProps) {
+interface AdminPanelProps {
+  matches: Match[];
+  supportTickets: SupportTicket[];
+}
+
+export default function AdminPanel({ matches, supportTickets }: AdminPanelProps) {
   const [matchResults, setMatchResults] = useState<Record<number, { homeScore: number; awayScore: number }>>({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -139,6 +149,26 @@ export default function AdminPanel({ matches }: AdminPanelProps) {
           {message}
         </div>
       )}
+
+      <div className="glass-panel rounded-2xl border border-stone-800 p-6 flex flex-col gap-4">
+        <h2 className="text-xl font-bold text-stone-100">Support Inbox</h2>
+        {supportTickets.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4">
+            {supportTickets.map((ticket) => (
+              <div key={ticket.id} className="rounded-xl border border-stone-800 bg-stone-950/60 p-4 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-3 text-xs text-stone-500">
+                  <span>{ticket.email}</span>
+                  <span>{ticket.issueType} · {new Date(ticket.createdAt).toLocaleString()}</span>
+                </div>
+                <p className="text-sm text-stone-200 whitespace-pre-wrap">{ticket.message}</p>
+                <span className="text-[10px] uppercase tracking-wider text-amber-500">{ticket.locale}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-stone-400">No support tickets yet.</p>
+        )}
+      </div>
 
       {/* Matches by Stage */}
       {Object.entries(groupedMatches).map(([stage, stageMatches]) => (

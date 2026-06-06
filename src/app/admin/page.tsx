@@ -34,5 +34,10 @@ export default async function AdminPage() {
     },
   });
 
-  return <AdminPanel matches={matches} />;
+  const supportTickets = await prisma.supportTicket.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 25,
+  });
+
+  return <AdminPanel matches={matches} supportTickets={supportTickets} />;
 }

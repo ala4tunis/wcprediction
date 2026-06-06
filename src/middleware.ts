@@ -32,6 +32,11 @@ export async function middleware(request: NextRequest) {
   // This refreshes the session if expired - vital for SSR
   await supabase.auth.getUser();
 
+  const localeFromQuery = request.nextUrl.searchParams.get("lang");
+  if (localeFromQuery) {
+    response.cookies.set("locale", localeFromQuery, { path: "/", maxAge: 31536000 });
+  }
+
   return response;
 }
 

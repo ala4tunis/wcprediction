@@ -121,3 +121,13 @@ model PointTransaction {
   createdAt    DateTime @default(now())
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model SupportTicket {
+  id        String   @id @default(uuid())
+  userId    String?
+  email     String
+  issueType String
+  message   String
+  locale    String   @default("en")
+  createdAt DateTime @default(now())
+}
