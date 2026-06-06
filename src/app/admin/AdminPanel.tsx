@@ -69,7 +69,7 @@ export default function AdminPanel({ matches }: AdminPanelProps) {
       } else {
         setMessage("Failed to save match result");
       }
-    } catch (error) {
+    } catch {
       setMessage("Error saving match result");
     } finally {
       setLoading(false);
@@ -96,7 +96,7 @@ export default function AdminPanel({ matches }: AdminPanelProps) {
       } else {
         setMessage("Failed to lock/unlock predictions");
       }
-    } catch (error) {
+    } catch {
       setMessage("Error locking/unlocking predictions");
     } finally {
       setLoading(false);

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Newspaper, Calendar, ArrowUpRight, Sparkles } from "lucide-react";
 import { fetchFootballNews } from "@/lib/newsApi";
 
