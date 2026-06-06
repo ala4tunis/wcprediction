@@ -86,7 +86,7 @@ export default async function Home() {
           </div>
           <h3 className="text-xl font-bold text-stone-100">Live Leaderboard</h3>
           <p className="text-stone-400 text-sm leading-relaxed">
-            Real-time rankings powered by Supabase. Watch your position change instantly as matches unfold.
+            Watch your ranking change instantly as matches unfold. See how you compare with other fans.
           </p>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, User, Zap } from "lucide-react";
+import { Trophy, User, Zap, Search } from "lucide-react";
 
 interface UserRow {
   id: string;
@@ -19,6 +19,7 @@ interface LeaderboardClientProps {
 
 export default function LeaderboardClient({ initialUsers }: LeaderboardClientProps) {
   const [users, setUsers] = useState<UserRow[]>(initialUsers);
+  const [searchQuery, setSearchQuery] = useState("");
   const [ticker, setTicker] = useState<string | null>(null);
 
   // Keep a ref to the current users list to avoid resubscriptions
@@ -106,13 +107,27 @@ export default function LeaderboardClient({ initialUsers }: LeaderboardClientPro
         {/* Header decoration */}
         <div className="absolute top-0 right-0 w-[150px] h-[150px] rounded-full bg-emerald-500/5 blur-[50px] pointer-events-none -z-10" />
 
-        <div className="flex items-center justify-between border-b border-stone-850 pb-5 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-850 pb-5 mb-6">
           <h2 className="text-xl font-bold tracking-tight text-stone-100 flex items-center gap-2.5">
             <Trophy className="w-6 h-6 text-amber-500 animate-pulse" /> Café Leaderboard
           </h2>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 text-emerald-400 text-[10px] font-extrabold border border-emerald-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> Real-time active
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 text-emerald-400 text-[10px] font-extrabold border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> Real-time active
+            </span>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+          <input
+            type="text"
+            placeholder="Search players..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 rounded-xl bg-stone-950/80 border border-stone-800 text-stone-100 placeholder-stone-500 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 outline-none transition-all text-sm"
+          />
         </div>
 
         {/* Column labels */}
@@ -125,7 +140,11 @@ export default function LeaderboardClient({ initialUsers }: LeaderboardClientPro
         {/* Rows with layout animation */}
         <div className="flex flex-col gap-2 mt-4">
           <AnimatePresence initial={false}>
-            {users.map((user) => {
+            {users
+              .filter((user) =>
+                user.name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((user) => {
               const isTop3 = user.rank <= 3;
               const isFirst = user.rank === 1;
 

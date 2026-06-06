@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Coffee, Calendar, Trophy, Users, ShieldAlert, CheckCircle2, Lock, Save, Play } from "lucide-react";
+import { Coffee, Calendar, Trophy, Users, ShieldAlert, CheckCircle2, Lock, Save, Play, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 
@@ -40,6 +40,7 @@ interface PredictionsClientProps {
 
 export default function PredictionsClient({ matches, teams, userPredictions }: PredictionsClientProps) {
   const [activeTab, setActiveTab] = useState<"matches" | "groups" | "finalists" | "awards">("matches");
+  const [matchSearchQuery, setMatchSearchQuery] = useState("");
   
   // State for match prediction forms
   const [matchInputs, setMatchInputs] = useState<Record<number, { home: string; away: string }>>(() => {
@@ -316,8 +317,30 @@ export default function PredictionsClient({ matches, teams, userPredictions }: P
         >
           {/* MATCH PREDICTIONS TAB */}
           {activeTab === "matches" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {matches.map((match) => {
+            <div className="flex flex-col gap-6">
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+                <input
+                  type="text"
+                  placeholder="Search matches by team or group..."
+                  value={matchSearchQuery}
+                  onChange={(e) => setMatchSearchQuery(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-stone-950/80 border border-stone-800 text-stone-100 placeholder-stone-500 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 outline-none transition-all text-sm"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {matches
+                  .filter((match) => {
+                    const query = matchSearchQuery.toLowerCase();
+                    return (
+                      match.homeTeam.name.toLowerCase().includes(query) ||
+                      match.awayTeam.name.toLowerCase().includes(query) ||
+                      (match.groupName && match.groupName.toLowerCase().includes(query))
+                    );
+                  })
+                  .map((match) => {
                 const locked = isMatchLocked(match.kickoffTime);
                 const hasScorePred = userPredictions.matches[match.id];
                 const points = hasScorePred?.pointsEarned;
@@ -431,6 +454,7 @@ export default function PredictionsClient({ matches, teams, userPredictions }: P
                   </div>
                 );
               })}
+              </div>
             </div>
           )}
 

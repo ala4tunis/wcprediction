@@ -1,0 +1,38 @@
+import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/db";
+import { redirect } from "next/navigation";
+import AdminPanel from "./AdminPanel";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminPage() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Check if user is admin
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { role: true },
+  });
+
+  if (!dbUser || dbUser.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
+  // Fetch all matches with teams
+  const matches = await prisma.match.findMany({
+    include: {
+      homeTeam: true,
+      awayTeam: true,
+    },
+    orderBy: {
+      kickoffTime: "asc",
+    },
+  });
+
+  return <AdminPanel matches={matches} />;
+}

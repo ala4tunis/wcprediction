@@ -12,9 +12,12 @@ export default async function PredictionsPage() {
     redirect("/login");
   }
 
-  // 1. Fetch matches with teams
+  // 1. Fetch matches with teams, ordered by group then kickoff time
   const matches = await prisma.match.findMany({
-    orderBy: { kickoffTime: "asc" },
+    orderBy: [
+      { groupName: "asc" },
+      { kickoffTime: "asc" },
+    ],
     include: {
       homeTeam: true,
       awayTeam: true,

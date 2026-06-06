@@ -287,7 +287,7 @@ export default function LoginPage() {
         {/* Extra notice */}
         <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 font-medium">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          <span>Secure authentication handled by Supabase Auth</span>
+          <span>Secure authentication</span>
         </div>
       </div>
     </div>

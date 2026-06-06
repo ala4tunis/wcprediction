@@ -17,7 +17,7 @@ export default async function LeaderboardPage() {
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-extrabold tracking-tight text-stone-100">Café Leaderboard</h1>
         <p className="text-stone-400 text-sm">
-          Watch the ranks shift live! Leverage Supabase Realtime DB changes to instantly animate row updates when players score points.
+          Watch the ranks shift live! Rankings update instantly when players score points.
         </p>
       </div>
 

@@ -46,6 +46,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="dark">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body
         className={`${inter.variable} ${outfit.variable} ${inter.className} font-sans antialiased text-stone-100 min-h-screen flex flex-col`}
       >
@@ -147,7 +150,7 @@ export default async function RootLayout({
 
         {/* Footer */}
         <footer className="w-full border-t border-stone-900 bg-stone-950/40 py-6 text-center text-xs text-stone-500">
-          <p>© 2026 Ayeb Café Prediction. All rights reserved. Built with Next.js 14 & Supabase.</p>
+          <p>© 2026 Ayeb Café Prediction. All rights reserved.</p>
         </footer>
       </body>
     </html>

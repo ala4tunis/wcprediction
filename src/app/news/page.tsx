@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Newspaper, Rss, Calendar, ArrowUpRight, Sparkles } from "lucide-react";
+import { Newspaper, Calendar, ArrowUpRight, Sparkles } from "lucide-react";
 import { fetchFootballNews } from "@/lib/newsApi";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Football News & World Cup Updates | Ayeb Café",
-  description: "Get the latest football news, tactical previews, group stage analysis, and RSS updates. Optimize your predictor strategies at Ayeb Café.",
+  description: "Get the latest football news, match previews, team updates, and tournament insights to improve your predictions at Ayeb Café.",
   openGraph: {
     title: "Football News & World Cup Updates | Ayeb Café",
-    description: "Read elite match reports, player reviews, and tactical reviews to refine your predictions at Ayeb Café.",
+    description: "Read match reports, player updates, and team news to help you make better predictions at Ayeb Café.",
     type: "article",
     url: "/news",
   },
@@ -164,46 +164,36 @@ export default async function NewsPage() {
     ];
   }
 
-  // Structural JSON-LD news schema
+  // News article data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     "headline": "Ayeb Café Prediction Football News Hub",
-    "description": "Latest tournament previews and point calculations from Ayeb Café.",
+    "description": "Latest tournament previews and match updates from Ayeb Café.",
     "image": "https://ayeb-cafe.com/og-image.jpg",
     "datePublished": "2026-06-01T00:00:00Z",
     "author": {
       "@type": "Organization",
-      "name": "Ayeb Café Media",
+      "name": "Ayeb Café",
     },
   };
 
   return (
     <div className="flex flex-col gap-8">
-      {/* JSON-LD structural schema insertion */}
+      {/* News data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Header section with RSS Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-850 pb-5">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-stone-100 flex items-center gap-2">
-            <Newspaper className="w-8 h-8 text-yellow-500" /> Football News Hub
-          </h1>
-          <p className="text-stone-400 text-sm">
-            Read expert match previews and tactical insights to stay ahead in your predictions.
-          </p>
-        </div>
-
-        <Link
-          href="/api/news/rss"
-          target="_blank"
-          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:text-yellow-350 hover:bg-yellow-500/15 font-bold text-xs transition-all shadow-md"
-        >
-          <Rss className="w-4 h-4 text-yellow-500" /> RSS Football Feed
-        </Link>
+      {/* Header section */}
+      <div className="flex flex-col gap-1 border-b border-stone-850 pb-5">
+        <h1 className="text-3xl font-extrabold tracking-tight text-stone-100 flex items-center gap-2">
+          <Newspaper className="w-8 h-8 text-yellow-500" /> Football News Hub
+        </h1>
+        <p className="text-stone-400 text-sm">
+          Read expert match previews and tactical insights to stay ahead in your predictions.
+        </p>
       </div>
 
       {/* Hero Highlight Box */}
