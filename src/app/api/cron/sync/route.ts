@@ -139,7 +139,7 @@ async function autoScoreTournamentAwards() {
 export async function GET(request: Request) {
   // Verify Vercel Cron authorization header if present in production
   const authHeader = request.headers.get("authorization");
-  if (process.env.NODE_ENV === "production" && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (process.env.NODE_ENV === "production" && process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
@@ -221,7 +221,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   // Verify Vercel Cron authorization header if present in production
   const authHeader = request.headers.get("authorization");
-  if (process.env.NODE_ENV === "production" && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (process.env.NODE_ENV === "production" && process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
   return GET(request);
