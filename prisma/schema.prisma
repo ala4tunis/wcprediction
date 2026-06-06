@@ -1,0 +1,123 @@
+datasource db {
+  provider  = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                   String                 @id // Matches Supabase auth.users.id
+  email                String                 @unique
+  name                 String
+  avatarUrl            String?
+  role                 String                 @default("USER") // "USER" or "ADMIN"
+  totalPoints          Int                    @default(0)
+  rank                 Int                    @default(1)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  matchPredictions     MatchPrediction[]
+  groupPredictions     GroupPrediction[]
+  finalistsPredictions FinalistsPrediction[]
+  tournamentPrediction TournamentPrediction?
+  pointTransactions    PointTransaction[]
+}
+
+model Team {
+  id                    Int                   @id // Matches API-Football team ID
+  name                  String
+  code                  String?
+  flagUrl               String?
+  groupName             String?               // e.g. "Group A"
+  homeMatches           Match[]               @relation("HomeTeam")
+  awayMatches           Match[]               @relation("AwayTeam")
+  predictedHomeFinalist FinalistsPrediction[] @relation("PredictedHomeFinalist")
+  predictedAwayFinalist FinalistsPrediction[] @relation("PredictedAwayFinalist")
+}
+
+model Match {
+  id               Int               @id // Matches API-Football fixture ID
+  homeTeamId       Int
+  awayTeamId       Int
+  homeScore        Int?
+  awayScore        Int?
+  status           String            // e.g., "NS" (Not Started), "LIVE", "FT" (Finished)
+  kickoffTime      DateTime
+  stage            String            // e.g., "Group Stage", "Round of 16", "Quarter-finals", "Semi-finals", "Final"
+  groupName        String?           // e.g., "Group A"
+  homeTeam         Team              @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam         Team              @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  matchPredictions MatchPrediction[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model MatchPrediction {
+  id           String    @id @default(uuid())
+  userId       String
+  matchId      Int
+  homeScore    Int
+  awayScore    Int
+  pointsEarned Int?      // Calculated at full time
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match        Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, matchId])
+}
+
+model GroupPrediction {
+  id             String   @id @default(uuid())
+  userId         String
+  groupName      String   // e.g. "A", "B", "C"
+  qualifiedTeams String   // Comma separated list of Team IDs (e.g. "1,2")
+  orderedTeams   String   // Comma separated list of Team IDs (e.g. "1,2,3,4")
+  pointsEarned   Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupName])
+}
+
+model FinalistsPrediction {
+  id                      String   @id @default(uuid())
+  userId                  String
+  predictedHomeFinalistId Int
+  predictedAwayFinalistId Int
+  roundType               String   // "R1" (after round 1), "R2" (after round 2), "R3" (after round 3)
+  pointsEarned            Int?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  predictedHomeFinalist   Team     @relation("PredictedHomeFinalist", fields: [predictedHomeFinalistId], references: [id])
+  predictedAwayFinalist   Team     @relation("PredictedAwayFinalist", fields: [predictedAwayFinalistId], references: [id])
+
+  @@unique([userId, roundType])
+}
+
+model TournamentPrediction {
+  id                   String   @id @default(uuid())
+  userId               String   @unique
+  topScorerName        String?  // Top Scorer Name
+  topAssistsName       String?  // Top Assists Name
+  goldenBallName       String?  // Golden Ball Name
+  pointsEarnedScorer   Int?
+  pointsEarnedAssists  Int?
+  pointsEarnedGolden   Int?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PointTransaction {
+  id           String   @id @default(uuid())
+  userId       String
+  points       Int
+  reason       String   // e.g. "Match 48 Score Prediction", "Group A Qualified", "Finalists Prediction (R1)"
+  referenceId  String?  // Prediction ID or Match ID
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -11,6 +11,11 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "stone-850": "#1c1917",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-outfit)", "var(--font-inter)", "system-ui", "sans-serif"],
       },
     },
   },
