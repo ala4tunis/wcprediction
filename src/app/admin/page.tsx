@@ -34,10 +34,15 @@ export default async function AdminPage() {
     },
   });
 
-  const supportTickets = await prisma.supportTicket.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 25,
-  });
+  let supportTickets = [];
+  try {
+    supportTickets = await prisma.supportTicket.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 25,
+    });
+  } catch (error) {
+    console.warn("SupportTicket table is not available yet:", error);
+  }
 
   return <AdminPanel matches={matches} supportTickets={supportTickets} />;
 }

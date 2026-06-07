@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Shield, Lock, Unlock, Save, ArrowLeft, Flag } from "lucide-react";
+import { Shield, Lock, Unlock, Save, ArrowLeft, Flag, Trash2 } from "lucide-react";
 
 interface Team {
   id: number;
@@ -33,7 +33,7 @@ interface SupportTicket {
   issueType: string;
   message: string;
   locale: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 interface AdminPanelProps {
@@ -45,6 +45,7 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
   const [matchResults, setMatchResults] = useState<Record<number, { homeScore: number; awayScore: number }>>({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [deletingTicketId, setDeletingTicketId] = useState<string | null>(null);
 
   const handleScoreChange = (matchId: number, team: "home" | "away", value: string) => {
     setMatchResults((prev) => ({
@@ -115,6 +116,31 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
     }
   };
 
+  const handleDeleteTicket = async (ticketId: string) => {
+    setDeletingTicketId(ticketId);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/admin/support-tickets", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticketId }),
+      });
+
+      if (response.ok) {
+        setMessage("Support ticket deleted successfully!");
+        setTimeout(() => setMessage(""), 3000);
+        window.location.reload();
+      } else {
+        setMessage("Failed to delete support ticket");
+      }
+    } catch {
+      setMessage("Error deleting support ticket");
+    } finally {
+      setDeletingTicketId(null);
+    }
+  };
+
   const groupedMatches = matches.reduce((acc, match) => {
     const stage = match.stage;
     if (!acc[stage]) acc[stage] = [];
@@ -124,15 +150,12 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-850 pb-5">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-extrabold tracking-tight text-stone-100 flex items-center gap-2">
             <Shield className="w-8 h-8 text-yellow-500" /> Admin Panel
           </h1>
-          <p className="text-stone-400 text-sm">
-            Manage match results and prediction locks
-          </p>
+          <p className="text-stone-400 text-sm">Manage match results and prediction locks</p>
         </div>
 
         <Link
@@ -143,7 +166,6 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
         </Link>
       </div>
 
-      {/* Success/Error Message */}
       {message && (
         <div className={`p-4 rounded-xl border ${message.includes("success") ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-red-500/10 border-red-500/30 text-red-400"}`}>
           {message}
@@ -158,7 +180,20 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
               <div key={ticket.id} className="rounded-xl border border-stone-800 bg-stone-950/60 p-4 flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-3 text-xs text-stone-500">
                   <span>{ticket.email}</span>
-                  <span>{ticket.issueType} · {new Date(ticket.createdAt).toLocaleString()}</span>
+                  <div className="flex items-center gap-3">
+                    <span>
+                      {ticket.issueType} · {new Date(ticket.createdAt).toISOString().replace("T", " ").slice(0, 19)} UTC
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteTicket(ticket.id)}
+                      disabled={deletingTicketId === ticket.id}
+                      className="inline-flex items-center gap-1 rounded-lg border border-red-500/30 bg-red-500/10 px-2 py-1 text-[10px] font-bold text-red-400 hover:bg-red-500/20 disabled:opacity-50"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      {deletingTicketId === ticket.id ? "Deleting" : "Delete"}
+                    </button>
+                  </div>
                 </div>
                 <p className="text-sm text-stone-200 whitespace-pre-wrap">{ticket.message}</p>
                 <span className="text-[10px] uppercase tracking-wider text-amber-500">{ticket.locale}</span>
@@ -170,7 +205,6 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
         )}
       </div>
 
-      {/* Matches by Stage */}
       {Object.entries(groupedMatches).map(([stage, stageMatches]) => (
         <div key={stage} className="flex flex-col gap-4">
           <h2 className="text-xl font-bold text-stone-100">{stage}</h2>
@@ -178,7 +212,6 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
             {stageMatches.map((match) => (
               <div key={match.id} className="glass-panel rounded-2xl border border-stone-800 p-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                  {/* Teams */}
                   <div className="flex items-center gap-4 flex-1">
                     <div className="flex items-center gap-3 flex-1 justify-end">
                       <span className="text-sm font-bold text-stone-100">{match.homeTeam.name}</span>
@@ -211,7 +244,6 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleSaveResult(match.id)}
@@ -241,7 +273,6 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
                   </div>
                 </div>
 
-                {/* Match Info */}
                 <div className="flex items-center gap-4 mt-4 pt-4 border-t border-stone-850 text-xs text-stone-500">
                   <span className="flex items-center gap-1">
                     <Flag className="w-3 h-3" /> {match.groupName || "N/A"}
