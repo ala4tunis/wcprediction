@@ -1,9 +1,23 @@
 "use server";
 
+import { headers } from "next/headers";
 import { createClient } from "./supabase/server";
 import { prisma } from "./db";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+
+function getSiteUrl() {
+  const requestOrigin = headers().get("origin");
+  if (requestOrigin) return requestOrigin;
+
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configuredUrl) return configuredUrl;
+
+  const vercelUrl = process.env.VERCEL_URL;
+  if (vercelUrl) return `https://${vercelUrl}`;
+
+  return "http://localhost:3000";
+}
 
 /**
  * Check if the user exists in our Prisma User model. If not, create them.
@@ -99,7 +113,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/callback`,
+      redirectTo: `${getSiteUrl()}/api/auth/callback`,
     },
   });
 
@@ -117,7 +131,7 @@ export async function signInWithGitHub() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/callback`,
+      redirectTo: `${getSiteUrl()}/api/auth/callback`,
     },
   });
 
@@ -135,7 +149,7 @@ export async function signInWithFacebook() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "facebook",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/auth/callback`,
+      redirectTo: `${getSiteUrl()}/api/auth/callback`,
     },
   });
 
