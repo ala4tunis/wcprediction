@@ -23,8 +23,12 @@ const outfit = Outfit({
 });
 
 function getSiteUrl() {
-  const requestOrigin = headers().get("origin");
-  if (requestOrigin) return requestOrigin;
+  try {
+    const requestOrigin = headers().get("origin");
+    if (requestOrigin) return requestOrigin;
+  } catch {
+    // headers() called outside request scope during build
+  }
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
   if (configuredUrl) return configuredUrl;
   const vercelUrl = process.env.VERCEL_URL;
