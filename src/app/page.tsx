@@ -37,73 +37,90 @@ export default async function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] turf-grid football-pattern relative py-12">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-gradient-to-tr from-yellow-500/15 to-emerald-500/10 blur-[80px] pointer-events-none -z-10" />
+    <div className="relative py-10 sm:py-14">
+      <section className="min-h-[68vh] flex items-stretch">
+        <div
+          className="relative overflow-hidden border border-amber-500/18 px-6 py-8 sm:px-10 sm:py-12 shadow-[0_26px_70px_rgba(0,0,0,0.28)] w-full"
+          style={{
+            backgroundImage: "url('/hero-bg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center right",
+          }}
+        >
+          {/* Dark overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-900/50" />
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-amber-500" />
+          <div className="absolute inset-0 football-pattern opacity-20" />
+          <div className="absolute right-5 top-5 hidden sm:grid grid-cols-4 gap-1 opacity-45">
+            {Array.from({ length: 16 }).map((_, index) => (
+              <span key={index} className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            ))}
+          </div>
 
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-950/40 border border-yellow-500/30 text-yellow-400 text-xs font-semibold uppercase tracking-wider mb-6 animate-pulse text-center">
-        <Circle className="w-3.5 h-3.5 fill-yellow-400" />
-        {titles.badge}
-      </div>
+          <div className="relative inline-flex items-center gap-2 border border-amber-500/35 bg-amber-500/10 px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.18em] text-amber-300 mb-8 text-center">
+            <Circle className="w-3.5 h-3.5 fill-amber-400" />
+            {titles.badge}
+          </div>
 
-      <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-center tracking-tight max-w-4xl mb-6">
-        <span className="trophy-shine">{titles.title.split(".")[0]}.</span>{" "}
-        <span className="bg-gradient-to-r from-yellow-400 via-yellow-200 to-emerald-400 bg-clip-text text-transparent">
-          {titles.title.split(".")[1]?.trim()}
-        </span>
-      </h1>
+          <h1 className="relative text-4xl sm:text-6xl md:text-7xl font-black tracking-tight max-w-4xl mb-6 leading-[0.93] text-stone-100">
+            <span>{titles.title.split(".")[0]}.</span>{" "}
+            <span className="block trophy-shine">{titles.title.split(".")[1]?.trim()}</span>
+          </h1>
 
-      <p className="text-stone-400 text-center text-base sm:text-xl max-w-2xl mb-10 leading-relaxed">
-        {titles.description}
-      </p>
+          <p className="relative text-stone-400 text-base sm:text-xl max-w-2xl mb-10 leading-relaxed">
+            {titles.description}
+          </p>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-16 w-full justify-center max-w-md px-4">
-        {user ? (
-          <Link href="/dashboard" className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-stone-950 font-bold transition-all shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/20 group w-full glow-gold">
-            {titles.goDashboard}
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        ) : (
-          <>
-            <Link href="/login?tab=signup" className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-stone-950 font-bold transition-all shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/20 group w-full sm:w-auto glow-gold">
-              {titles.join}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link href="/login" className="flex items-center justify-center px-8 py-4 rounded-xl bg-stone-900 border border-stone-800 hover:bg-stone-850 hover:border-yellow-500/30 text-stone-200 font-semibold transition-all w-full sm:w-auto">
-              {titles.signIn}
-            </Link>
-          </>
-        )}
-      </div>
+          <div className="relative flex flex-col sm:flex-row gap-3 w-full max-w-md">
+            {user ? (
+              <Link href="/dashboard" className="flex items-center justify-center gap-2 px-7 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold transition-all group w-full shadow-lg shadow-amber-500/15">
+                {titles.goDashboard}
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <>
+                <Link href="/login?tab=signup" className="flex items-center justify-center gap-2 px-7 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold transition-all group w-full sm:w-auto shadow-lg shadow-amber-500/15">
+                  {titles.join}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link href="/login" className="flex items-center justify-center px-7 py-4 border border-emerald-500/30 hover:border-amber-500/45 bg-slate-900/70 text-stone-200 font-bold transition-all w-full sm:w-auto">
+                  {titles.signIn}
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl px-4">
-        <div className="glass-panel glass-panel-hover p-6 rounded-2xl flex flex-col items-start gap-4">
-          <div className="p-3 rounded-xl bg-yellow-950/40 border border-yellow-500/20 text-yellow-500">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+        <div className="glass-panel p-6 flex flex-col items-start gap-4">
+          <div className="p-3 bg-amber-500 text-slate-950">
             <Circle className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold text-stone-100">{titles.matchTitle}</h3>
+          <h3 className="text-xl font-black text-stone-100">{titles.matchTitle}</h3>
           <p className="text-stone-400 text-sm leading-relaxed">{titles.matchBody}</p>
         </div>
-        <div className="glass-panel glass-panel-hover p-6 rounded-2xl flex flex-col items-start gap-4">
-          <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-emerald-400">
+        <div className="bg-emerald-950/55 border border-emerald-500/25 p-6 flex flex-col items-start gap-4 text-stone-100">
+          <div className="p-3 bg-emerald-400/12 text-emerald-300">
             <Zap className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold text-stone-100">{titles.bonusTitle}</h3>
+          <h3 className="text-xl font-black">{titles.bonusTitle}</h3>
           <p className="text-stone-400 text-sm leading-relaxed">{titles.bonusBody}</p>
         </div>
-        <div className="glass-panel glass-panel-hover p-6 rounded-2xl flex flex-col items-start gap-4">
-          <div className="p-3 rounded-xl bg-yellow-950/40 border border-yellow-500/20 text-yellow-500">
+        <div className="glass-panel p-6 flex flex-col items-start gap-4">
+          <div className="p-3 bg-slate-800 text-amber-300 border border-amber-500/20">
             <Trophy className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold text-stone-100">{titles.liveTitle}</h3>
+          <h3 className="text-xl font-black text-stone-100">{titles.liveTitle}</h3>
           <p className="text-stone-400 text-sm leading-relaxed">{titles.liveBody}</p>
         </div>
       </div>
 
-      <div className="mt-12 glass-panel p-4 rounded-xl border border-yellow-900/30 text-stone-400 text-xs text-center max-w-3xl">
-        <span className="font-bold text-yellow-500">{titles.disclaimerTitle}:</span> {titles.disclaimerBody}
+      <div className="mt-8 bg-slate-950/55 p-4 border-l-4 border-amber-500 text-stone-400 text-xs max-w-3xl">
+        <span className="font-black text-amber-300">{titles.disclaimerTitle}:</span> {titles.disclaimerBody}
       </div>
 
-      <div id="support" className="w-full max-w-3xl mt-12 px-4">
+      <div id="support" className="w-full max-w-3xl mt-12">
         <SupportForm
           locale={locale}
           labels={{

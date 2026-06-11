@@ -2,7 +2,7 @@ import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { Coffee, Trophy, TrendingUp, Calendar, AlertCircle, Sparkles } from "lucide-react";
+import { Zap, Trophy, TrendingUp, Calendar, AlertCircle, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export default async function DashboardPage() {
@@ -63,13 +63,13 @@ export default async function DashboardPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex flex-col gap-1.5">
             <span className="text-xs text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 fill-amber-500" /> Cafe Lounge Active
+              <Sparkles className="w-3.5 h-3.5 fill-amber-500" /> World Cup 2026 Live
             </span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-100">
               Welcome back, {user.name}!
             </h1>
             <p className="text-stone-400 text-sm max-w-xl">
-              Enjoy your coffee and keep predictions coming. Make sure to check deadlines before kickoff to lock in your scores!
+              Keep your predictions coming. Make sure to check deadlines before kickoff to lock in your scores!
             </p>
           </div>
 
@@ -92,7 +92,7 @@ export default async function DashboardPage() {
             <span className="text-[10px] text-amber-500 font-medium">Accumulated score</span>
           </div>
           <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/20 text-amber-500">
-            <Coffee className="w-6 h-6" />
+            <Zap className="w-6 h-6" />
           </div>
         </div>
 

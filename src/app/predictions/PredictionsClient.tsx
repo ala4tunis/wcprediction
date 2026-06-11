@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Coffee, Calendar, Trophy, Users, ShieldAlert, CheckCircle2, Lock, Save, Play, Search } from "lucide-react";
+import { Star, Calendar, Trophy, Users, ShieldAlert, CheckCircle2, Lock, Save, Play, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 
@@ -302,7 +302,7 @@ export default function PredictionsClient({ matches, teams, userPredictions }: P
             activeTab === "awards" ? "bg-amber-500 text-stone-950 shadow-md font-extrabold" : "text-stone-400 hover:text-stone-200"
           }`}
         >
-          <Coffee className="w-4 h-4" /> Overall Awards
+          <Star className="w-4 h-4" /> Overall Awards
         </button>
       </div>
 
