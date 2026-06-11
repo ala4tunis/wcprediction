@@ -5,6 +5,15 @@ import AdminPanel from "./AdminPanel";
 
 export const dynamic = "force-dynamic";
 
+type SupportTicket = {
+  id: string;
+  email: string;
+  issueType: string;
+  message: string;
+  locale: string;
+  createdAt: string;
+};
+
 export default async function AdminPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -34,7 +43,7 @@ export default async function AdminPage() {
     },
   });
 
-  let supportTickets = [];
+  let supportTickets: SupportTicket[] = [];
   try {
     supportTickets = await prisma.supportTicket.findMany({
       orderBy: { createdAt: "desc" },
