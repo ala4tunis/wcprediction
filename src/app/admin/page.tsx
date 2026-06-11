@@ -11,7 +11,8 @@ type SupportTicket = {
   issueType: string;
   message: string;
   locale: string;
-  createdAt: string;
+  userId: string | null;
+  createdAt: Date;
 };
 
 export default async function AdminPage() {
