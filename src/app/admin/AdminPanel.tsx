@@ -33,7 +33,8 @@ interface SupportTicket {
   issueType: string;
   message: string;
   locale: string;
-  createdAt: string;
+  userId: string | null;
+  createdAt: Date;
 }
 
 interface AdminPanelProps {
@@ -182,7 +183,7 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
                   <span>{ticket.email}</span>
                   <div className="flex items-center gap-3">
                     <span>
-                      {ticket.issueType} · {new Date(ticket.createdAt).toISOString().replace("T", " ").slice(0, 19)} UTC
+                      {ticket.issueType} · {ticket.createdAt.toISOString().replace("T", " ").slice(0, 19)} UTC
                     </span>
                     <button
                       type="button"
