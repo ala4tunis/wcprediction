@@ -12,6 +12,36 @@ import { prisma } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 /**
+ * Automatically lock matches 5 minutes before kickoff.
+ */
+async function autoLockMatches() {
+  console.log("[Auto-Lock] Checking for matches to lock...");
+  
+  const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
+  
+  const matchesToLock = await prisma.match.findMany({
+    where: {
+      status: "NS",
+      kickoffTime: {
+        lte: fiveMinutesFromNow,
+      },
+    },
+  });
+
+  for (const match of matchesToLock) {
+    console.log(`[Auto-Lock] Locking match ${match.id}: ${match.homeTeamId} vs ${match.awayTeamId}`);
+    await prisma.match.update({
+      where: { id: match.id },
+      data: { status: "LOCKED" },
+    });
+  }
+
+  if (matchesToLock.length > 0) {
+    console.log(`[Auto-Lock] Locked ${matchesToLock.length} matches`);
+  }
+}
+
+/**
  * Automatically checks and calculates points for group standings
  * when all matches in a group have been played (status: FT).
  */
@@ -159,6 +189,7 @@ export async function GET(request: Request) {
       await processMatchScoring(matchId, homeScore, awayScore);
 
       // Auto score groups, finalists, and awards in simulation too!
+      await autoLockMatches();
       await autoScoreGroups();
       await autoScoreFinalists();
       await autoScoreTournamentAwards();
@@ -172,6 +203,9 @@ export async function GET(request: Request) {
     // 2. Standard Cron Sync Operation
     console.log("[Cron] Syncing fixtures from API-Football...");
     const fixtures = await syncFixtures();
+
+    // Auto-lock matches 5 minutes before kickoff
+    await autoLockMatches();
 
     // Find any matches that are finished (status FT) in the database but have NOT been scored yet.
     const unscoredFinishedMatches = await prisma.match.findMany({

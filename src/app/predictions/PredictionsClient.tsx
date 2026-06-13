@@ -244,8 +244,10 @@ export default function PredictionsClient({ matches, teams, userPredictions }: P
     }
   };
 
-  const isMatchLocked = (kickoffTime: string) => {
-    return new Date() >= new Date(kickoffTime);
+  const isMatchLocked = (match: Match) => {
+    if (match.status === "LOCKED" || match.status === "FT" || match.status === "LIVE") return true;
+    const lockTime = new Date(new Date(match.kickoffTime).getTime() - 5 * 60 * 1000);
+    return new Date() >= lockTime;
   };
 
   return (
@@ -341,7 +343,7 @@ export default function PredictionsClient({ matches, teams, userPredictions }: P
                     );
                   })
                   .map((match) => {
-                const locked = isMatchLocked(match.kickoffTime);
+                const locked = isMatchLocked(match);
                 const hasScorePred = userPredictions.matches[match.id];
                 const points = hasScorePred?.pointsEarned;
 

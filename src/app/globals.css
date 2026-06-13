@@ -12,10 +12,10 @@
   --popover: 220 25% 10%;
   --popover-foreground: 0 0% 98%;
   
-  --primary: 45 90% 52%; /* World Cup Gold */
+  --primary: 45 90% 52%;
   --primary-foreground: 220 30% 8%;
   
-  --secondary: 142 70% 50%; /* Soccer Turf Green */
+  --secondary: 142 70% 50%;
   --secondary-foreground: 220 30% 8%;
   
   --muted: 220 10% 70%;
@@ -31,15 +31,18 @@
   --input: 220 20% 18%;
   --ring: 45 90% 52%;
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 }
 
 body {
   color: hsl(var(--foreground));
-  background: 
-    radial-gradient(ellipse at top, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom right, rgba(16, 185, 129, 0.06) 0%, transparent 40%),
-    linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  background:
+    linear-gradient(rgba(251, 191, 36, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 185, 129, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 18% 0%, rgba(251, 191, 36, 0.1), transparent 32rem),
+    radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.08), transparent 28rem),
+    linear-gradient(180deg, #0f172a 0%, #111827 48%, #0b1120 100%);
+  background-size: 42px 42px, 42px 42px, auto, auto, auto;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -48,40 +51,34 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-outfit), var(--font-inter), system-ui, sans-serif;
 }
 
-/* Glassmorphism Classes */
 .glass-panel {
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(251, 191, 36, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
 }
 
 .glass-panel-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-panel-hover:hover {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: rgba(251, 191, 36, 0.3);
-  box-shadow: 0 12px 40px 0 rgba(251, 191, 36, 0.1);
-  transform: translateY(-2px);
+  border-color: rgba(251, 191, 36, 0.34);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
-/* Soccer Field Theme Grid */
 .turf-grid {
   background-image: 
-    radial-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 20px 20px, 100px 100px;
+    linear-gradient(90deg, rgba(16, 185, 129, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+  background-size: 52px 52px, 52px 52px;
   background-position: 0 0, 0 0;
 }
 
-/* Football pattern overlay */
 .football-pattern {
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.03) 2px, transparent 2px),
-    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.03) 2px, transparent 2px);
+    radial-gradient(circle at 25% 25%, rgba(251, 191, 36, 0.05) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 2px, transparent 2px);
   background-size: 60px 60px;
 }
 
@@ -95,12 +92,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glow-gold {
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  box-shadow: 0 12px 28px rgba(251, 191, 36, 0.22);
 }
 
-/* World Cup Trophy Effect */
 .trophy-shine {
-  background: linear-gradient(135deg, #ffd700 0%, #ffb347 50%, #ffd700 100%);
+  background: linear-gradient(135deg, #fbbf24 0%, #fde68a 42%, #10b981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

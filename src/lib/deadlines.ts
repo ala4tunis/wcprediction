@@ -8,12 +8,19 @@ import { prisma } from "./db";
 export async function isMatchPredictionOpen(matchId: number): Promise<boolean> {
   const match = await prisma.match.findUnique({
     where: { id: matchId },
-    select: { kickoffTime: true },
+    select: { kickoffTime: true, status: true },
   });
 
   if (!match) return false;
 
-  return isBefore(new Date(), match.kickoffTime);
+  // If match has been manually locked, is live, or finished, prediction is closed
+  if (match.status === "LOCKED" || match.status === "FT" || match.status === "LIVE") {
+    return false;
+  }
+
+  // Enforce locking 5 minutes before kickoff
+  const lockTime = new Date(match.kickoffTime.getTime() - 5 * 60 * 1000);
+  return isBefore(new Date(), lockTime);
 }
 
 /**
@@ -34,17 +41,11 @@ export async function isGroupPredictionOpen(groupName: string): Promise<boolean>
 
 /**
  * Check if the overall tournament prediction is open.
- * Overall predictions lock at the kickoff of the very first match of the tournament.
+ * Overall predictions lock on June 28, 2026 at 7 AM UTC.
  */
 export async function isTournamentPredictionOpen(): Promise<boolean> {
-  const firstMatch = await prisma.match.findFirst({
-    orderBy: { kickoffTime: "asc" },
-    select: { kickoffTime: true },
-  });
-
-  if (!firstMatch) return true;
-
-  return isBefore(new Date(), firstMatch.kickoffTime);
+  const deadline = new Date("2026-06-28T07:00:00Z");
+  return isBefore(new Date(), deadline);
 }
 
 /**

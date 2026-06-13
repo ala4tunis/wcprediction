@@ -2,8 +2,8 @@ import { prisma } from "./db";
 
 /**
  * Calculate match prediction points:
- * - Correct score: 3 points (e.g. predicted 2-1, actual 2-1)
- * - Correct result: 1 point (e.g. predicted 2-1, actual 1-0, both home wins)
+ * - Correct result: 3 points (e.g. predicted 2-1, actual 1-0, both home wins)
+ * - Perfect score: +2 bonus points (e.g. predicted 2-1, actual 2-1) = 5 total
  * - Wrong result: 0 points
  */
 export function calculateMatchPoints(
@@ -12,18 +12,20 @@ export function calculateMatchPoints(
   actHome: number,
   actAway: number
 ): number {
-  if (predHome === actHome && predAway === actAway) {
-    return 3;
-  }
-  
   const predResult = Math.sign(predHome - predAway);
   const actResult = Math.sign(actHome - actAway);
   
+  let points = 0;
+  
   if (predResult === actResult) {
-    return 1;
+    points = 3; // Correct result
   }
   
-  return 0;
+  if (predHome === actHome && predAway === actAway) {
+    points += 2; // Perfect score bonus
+  }
+  
+  return points;
 }
 
 /**
@@ -110,6 +112,9 @@ export async function processMatchScoring(matchId: number, actualHomeScore: numb
           data: { totalPoints: { increment: points } },
         });
       }
+    }, {
+      maxWait: 10000,
+      timeout: 30000,
     });
   }
 
@@ -192,6 +197,9 @@ export async function processGroupScoring(
           data: { totalPoints: { increment: points } },
         });
       }
+    }, {
+      maxWait: 10000,
+      timeout: 30000,
     });
   }
 
@@ -266,6 +274,9 @@ export async function processFinalistsScoring(actualFinalistIds: number[]) {
           data: { totalPoints: { increment: points } },
         });
       }
+    }, {
+      maxWait: 10000,
+      timeout: 30000,
     });
   }
 
@@ -348,6 +359,9 @@ export async function processTournamentScoring(
           data: { totalPoints: { increment: totalPoints } },
         });
       }
+    }, {
+      maxWait: 10000,
+      timeout: 30000,
     });
   }
 

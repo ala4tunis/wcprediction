@@ -3,5 +3,11 @@
   "devCommand": "next dev -p 3000",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "crons": [
+    {
+      "path": "/api/cron/sync",
+      "schedule": "*/10 * * * *"
+    }
+  ]
 }

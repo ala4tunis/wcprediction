@@ -59,8 +59,12 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
   };
 
   const handleSaveResult = async (matchId: number) => {
+    const match = matches.find((m) => m.id === matchId);
+    if (!match) return;
+
     const result = matchResults[matchId];
-    if (!result) return;
+    const homeScore = result?.homeScore !== undefined ? result.homeScore : (match.homeScore ?? 0);
+    const awayScore = result?.awayScore !== undefined ? result.awayScore : (match.awayScore ?? 0);
 
     setLoading(true);
     setMessage("");
@@ -71,8 +75,8 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           matchId,
-          homeScore: result.homeScore,
-          awayScore: result.awayScore,
+          homeScore,
+          awayScore,
           status: "FT",
         }),
       });
@@ -80,6 +84,7 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
       if (response.ok) {
         setMessage("Match result saved successfully!");
         setTimeout(() => setMessage(""), 3000);
+        window.location.reload();
       } else {
         setMessage("Failed to save match result");
       }
@@ -107,6 +112,7 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
       if (response.ok) {
         setMessage(locked ? "Predictions locked successfully!" : "Predictions unlocked successfully!");
         setTimeout(() => setMessage(""), 3000);
+        window.location.reload();
       } else {
         setMessage("Failed to lock/unlock predictions");
       }
@@ -281,9 +287,15 @@ export default function AdminPanel({ matches, supportTickets }: AdminPanelProps)
                   <span>•</span>
                   <span>{new Date(match.kickoffTime).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
                   <span>•</span>
-                  <span className={`font-bold ${match.status === "FT" ? "text-emerald-400" : match.status === "LOCKED" ? "text-yellow-400" : "text-stone-400"}`}>
-                    {match.status === "FT" ? "Finished" : match.status === "LOCKED" ? "Locked" : "Not Started"}
-                  </span>
+                  {(() => {
+                    const isAutoLocked = new Date() >= new Date(new Date(match.kickoffTime).getTime() - 5 * 60 * 1000);
+                    const isMatchLocked = match.status === "LOCKED" || match.status === "FT" || match.status === "LIVE" || isAutoLocked;
+                    return (
+                      <span className={`font-bold ${match.status === "FT" ? "text-emerald-400" : isMatchLocked ? "text-yellow-400" : "text-stone-400"}`}>
+                        {match.status === "FT" ? "Finished" : isMatchLocked ? "Locked" : "Not Started"}
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
             ))}
